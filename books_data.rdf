@@ -2,40 +2,46 @@
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:ex="http://example.org/bookstore#">
   <ex:Book rdf:about="http://example.org/bookstore#HungerGames">
-    <ex:hasTitle>Hunger Games</ex:hasTitle>
-    <ex:hasAuthor>Suzanne Collins</ex:hasAuthor>
-    <ex:hasTheme>Science Fiction</ex:hasTheme>
-    <ex:hasTheme>Fantasy</ex:hasTheme>
     <ex:suitableForLevel>Advanced</ex:suitableForLevel>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:hasTheme>Science Fiction</ex:hasTheme>
+    <ex:hasAuthor>Suzanne Collins</ex:hasAuthor>
+    <ex:hasTitle>Hunger Games</ex:hasTitle>
   </ex:Book>
   <ex:Book rdf:about="http://example.org/bookstore#Dune">
-    <ex:hasTitle>Dune</ex:hasTitle>
-    <ex:hasAuthor>Frank Herbert</ex:hasAuthor>
-    <ex:hasTheme>Science Fiction</ex:hasTheme>
-    <ex:hasTheme>Fantasy</ex:hasTheme>
     <ex:suitableForLevel>Advanced</ex:suitableForLevel>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:hasTheme>Science Fiction</ex:hasTheme>
+    <ex:hasAuthor>Frank Herbert</ex:hasAuthor>
+    <ex:hasTitle>Dune</ex:hasTitle>
+  </ex:Book>
+  <ex:Book rdf:about="http://example.org/bookstore#Hobbit">
+    <ex:suitableForLevel>Intermediate</ex:suitableForLevel>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:hasAuthor>Tolkien</ex:hasAuthor>
+    <ex:hasTitle>Hobbit2</ex:hasTitle>
   </ex:Book>
   <ex:User rdf:about="http://example.org/bookstore#Alice">
-    <ex:hasName>Alice</ex:hasName>
-    <ex:readingLevel>Intermediate</ex:readingLevel>
     <ex:prefersTheme>Science Fiction</ex:prefersTheme>
+    <ex:readingLevel>Intermediate</ex:readingLevel>
+    <ex:hasName>Alice</ex:hasName>
   </ex:User>
   <ex:Book rdf:about="http://example.org/bookstore#HarryPotter">
-    <ex:suitableForLevel>Beginner</ex:suitableForLevel>
-    <ex:hasTheme>Fantasy</ex:hasTheme>
-    <ex:hasAuthor>J.K. Rowling</ex:hasAuthor>
     <ex:hasTitle>Harry Potter</ex:hasTitle>
+    <ex:hasAuthor>J.K. Rowling</ex:hasAuthor>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:suitableForLevel>Beginner</ex:suitableForLevel>
   </ex:Book>
   <ex:User rdf:about="http://example.org/bookstore#Bob">
-    <ex:hasName>Bob</ex:hasName>
-    <ex:readingLevel>Beginner</ex:readingLevel>
     <ex:prefersTheme>Mystery</ex:prefersTheme>
+    <ex:readingLevel>Beginner</ex:readingLevel>
+    <ex:hasName>Bob</ex:hasName>
   </ex:User>
   <ex:Book rdf:about="http://example.org/bookstore#TheSilentPatient">
-    <ex:hasTitle>The Silent Patient</ex:hasTitle>
-    <ex:hasAuthor>Alex Michaelides</ex:hasAuthor>
-    <ex:hasTheme>Mystery</ex:hasTheme>
-    <ex:hasTheme>Murder</ex:hasTheme>
     <ex:suitableForLevel>Intermediate</ex:suitableForLevel>
+    <ex:hasTheme>Murder</ex:hasTheme>
+    <ex:hasTheme>Mystery</ex:hasTheme>
+    <ex:hasAuthor>Alex Michaelides</ex:hasAuthor>
+    <ex:hasTitle>The Silent Patient</ex:hasTitle>
   </ex:Book>
 </rdf:RDF>

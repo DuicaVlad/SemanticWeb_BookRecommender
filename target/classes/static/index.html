@@ -8,10 +8,10 @@
         .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
         #mynetwork { width: 100%; height: 500px; border: 1px solid #333; background: #222; margin-top: 10px; }
         input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box;}
-        .form-group { margin-bottom: 10px; }
         button { padding: 10px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
         button:hover { background: #0056b3; }
-        label { font-weight: bold; }
+        .book-item { background: white; padding: 10px; margin: 5px 0; border-left: 5px solid #007bff; cursor: pointer; }
+        .book-item:hover { background: #eef; }
     </style>
 </head>
 <body>
@@ -25,16 +25,20 @@
     </div>
 
     <div class="section">
+        <h3>Available Books</h3>
+        <button onclick="loadBooks()">Refresh Book List</button>
+        <div id="bookList"></div>
+    </div>
+
+    <div class="section">
         <h3>Add or Modify Book</h3>
-        <p><i>Enter an ID to modify an existing book (e.g., 'HungerGames') or a new ID to create one.</i></p>
-        
-        <div class="form-group"><label>ID (Required):</label> <input type="text" id="bId" placeholder="e.g. HarryPotter"></div>
-        <div class="form-group"><label>Title:</label> <input type="text" id="bTitle" placeholder="e.g. Harry Potter and the Sorcerer's Stone"></div>
-        <div class="form-group"><label>Author:</label> <input type="text" id="bAuthor" placeholder="e.g. J.K. Rowling"></div>
-        <div class="form-group"><label>Theme:</label> <input type="text" id="bTheme" placeholder="e.g. Fantasy"></div>
-        <div class="form-group"><label>Level:</label> 
+        <div style="margin-bottom:10px"><label>ID (Required):</label> <input type="text" id="bId" placeholder="e.g. HarryPotter"></div>
+        <div style="margin-bottom:10px"><label>Title:</label> <input type="text" id="bTitle"></div>
+        <div style="margin-bottom:10px"><label>Author:</label> <input type="text" id="bAuthor"></div>
+        <div style="margin-bottom:10px"><label>Theme:</label> <input type="text" id="bTheme"></div>
+        <div style="margin-bottom:10px"><label>Level:</label> 
             <select id="bLevel">
-                <option value="">Select Diff</option>
+                <option value="">Select</option>
                 <option value="Beginner">Beginner</option>
                 <option value="Intermediate">Intermediate</option>
                 <option value="Advanced">Advanced</option>
@@ -44,28 +48,33 @@
     </div>
 
     <script>
+        async function loadBooks() {
+            let res = await fetch('/api/books');
+            let books = await res.json();
+            let html = '';
+            books.forEach(b => {
+                html += `<div class="book-item" onclick="window.location.href='book_details.html?id=${b.id}'">
+                            <strong>${b.title}</strong> by ${b.author}
+                         </div>`;
+            });
+            document.getElementById('bookList').innerHTML = html;
+        }
+
         async function uploadAndVisualize() {
             let formData = new FormData();
             let fileInput = document.getElementById('fileInput');
-            if(fileInput.files.length === 0) { alert("Please select a file first"); return; }
-            
+            if(fileInput.files.length === 0) { alert("Select file first"); return; }
             formData.append('file', fileInput.files[0]);
-            
-            try {
-                let response = await fetch('/api/upload', { method: 'POST', body: formData });
-                if (!response.ok) throw new Error("Upload failed");
-                let data = await response.json();
-                drawGraph(data);
-            } catch (e) { alert("Error: " + e.message); }
+            let response = await fetch('/api/upload', { method: 'POST', body: formData });
+            let data = await response.json();
+            drawGraph(data);
         }
-
         function drawGraph(data) {
             new vis.Network(document.getElementById('mynetwork'), 
                 { nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges) }, 
-                { nodes: { shape: 'dot', font: { color: 'white' } }, edges: { color: 'gray' } }
+                { nodes: { shape: 'dot', font: { color: 'white' } } }
             );
         }
-
         async function addBook() {
             let bookData = {
                 id: document.getElementById('bId').value,
@@ -74,21 +83,16 @@
                 theme: document.getElementById('bTheme').value,
                 level: document.getElementById('bLevel').value
             };
-
-            if(!bookData.id) { alert("Please enter an ID"); return; }
-
-            try {
-                let response = await fetch('/api/addBook', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bookData)
-                });
-                
-                let text = await response.text();
-                alert(text);
-                
-            } catch (e) { alert("Error saving book: " + e.message); }
+            if(!bookData.id) { alert("ID required"); return; }
+            await fetch('/api/addBook', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookData)
+            });
+            alert("Saved!");
+            loadBooks();
         }
+        
+        loadBooks();
     </script>
 </body>
 </html>

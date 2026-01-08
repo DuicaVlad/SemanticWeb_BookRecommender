@@ -10,8 +10,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-public class RdfController 
-{
+public class RdfController {
 
     private static final String RDF_FILE_PATH = "books_data.rdf";
     private static final String NS = "http://example.org/bookstore#"; 
@@ -23,7 +22,6 @@ public class RdfController
             model.read(file.getInputStream(), null);
             return ResponseEntity.ok(modelToVisJs(model));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -31,76 +29,112 @@ public class RdfController
     @PostMapping("/addBook")
     public ResponseEntity<String> addBook(@RequestBody Map<String, String> payload) {
         try {
-            // 1. Load the existing RDF file
-            Model model = ModelFactory.createDefaultModel();
-            InputStream in = new FileInputStream(RDF_FILE_PATH);
-            model.read(in, null);
-            in.close();
-
+            Model model = loadModel();
             String bookId = payload.get("id");
-            String title = payload.get("title");
-            String author = payload.get("author");
-            String theme = payload.get("theme");
-            String level = payload.get("level");
+            if (bookId == null || bookId.isEmpty()) return ResponseEntity.badRequest().body("ID required");
 
-            if (bookId == null || bookId.isEmpty()) {
-                return ResponseEntity.badRequest().body("Book ID is required.");
-            }
-
-            String validId = bookId.replaceAll("\\s+", "");
-            Resource book = model.createResource(NS + validId);
-
-            Property pTitle = model.createProperty(NS + "hasTitle");
-            Property pAuthor = model.createProperty(NS + "hasAuthor");
-            Property pTheme = model.createProperty(NS + "hasTheme");
-            Property pLevel = model.createProperty(NS + "suitableForLevel");
+            Resource book = model.createResource(NS + bookId.replaceAll("\\s+", ""));
             Resource typeBook = model.createResource(NS + "Book");
+            
+            if (!model.contains(book, RDF.type, typeBook)) book.addProperty(RDF.type, typeBook);
 
-            if (!model.contains(book, RDF.type, typeBook)) {
-                book.addProperty(RDF.type, typeBook);
-            }
+            updateProperty(book, "hasTitle", payload.get("title"));
+            updateProperty(book, "hasAuthor", payload.get("author"));           
+            updateProperty(book, "hasTheme", payload.get("theme"));
+            updateProperty(book, "suitableForLevel", payload.get("level"));
 
-            if (title != null && !title.isEmpty()) {
-                book.removeAll(pTitle); 
-                book.addProperty(pTitle, title);
-            }
-            if (author != null && !author.isEmpty()) {
-                book.removeAll(pAuthor);
-                book.addProperty(pAuthor, author);
-            }
-            if (theme != null && !theme.isEmpty()) {
-                book.addProperty(pTheme, theme);
-            }
-            if (level != null && !level.isEmpty()) {
-                book.removeAll(pLevel);
-                book.addProperty(pLevel, level);
-            }
-
-            FileOutputStream out = new FileOutputStream(RDF_FILE_PATH);
-            model.write(out, "RDF/XML");
-            out.close();
-
-            return ResponseEntity.ok("Book '" + bookId + "' saved successfully!");
-
+            saveModel(model);
+            return ResponseEntity.ok("Book saved!");
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
         }
     }
-    
+
+    @GetMapping("/books")
+    public ResponseEntity<List<Map<String, String>>> listBooks() {
+        try {
+            Model model = loadModel();
+            List<Map<String, String>> books = new ArrayList<>();
+            Resource typeBook = model.createResource(NS + "Book");
+
+            ResIterator iter = model.listSubjectsWithProperty(RDF.type, typeBook);
+            while (iter.hasNext()) {
+                Resource book = iter.nextResource();
+                books.add(Map.of(
+                    "id", shortLabel(book.getURI()),
+                    "title", getPropValue(book, "hasTitle"),
+                    "author", getPropValue(book, "hasAuthor")
+                ));
+            }
+            return ResponseEntity.ok(books);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/book/{id}")
+    public ResponseEntity<Map<String, String>> getBookDetails(@PathVariable String id) {
+        try {
+            Model model = loadModel();
+            Resource book = model.getResource(NS + id);
+            
+            if (!model.containsResource(book)) return ResponseEntity.notFound().build();
+
+            Map<String, String> details = new HashMap<>();
+            details.put("id", id);
+            details.put("title", getPropValue(book, "hasTitle"));
+            details.put("author", getPropValue(book, "hasAuthor"));
+            details.put("level", getPropValue(book, "suitableForLevel"));
+
+            List<String> themes = new ArrayList<>();
+            StmtIterator it = book.listProperties(model.getProperty(NS + "hasTheme"));
+            while(it.hasNext()) themes.add(it.nextStatement().getString());
+            details.put("theme", String.join(", ", themes));
+
+            return ResponseEntity.ok(details);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    private Model loadModel() throws FileNotFoundException {
+        Model model = ModelFactory.createDefaultModel();
+        InputStream in = new FileInputStream(RDF_FILE_PATH);
+        model.read(in, null);
+        try { in.close(); } catch (IOException e) {} 
+        return model;
+    }
+
+    private void saveModel(Model model) throws IOException {
+        FileOutputStream out = new FileOutputStream(RDF_FILE_PATH);
+        model.write(out, "RDF/XML");
+        out.close();
+    }
+
+    private void updateProperty(Resource r, String propName, String value) {
+        if (value != null && !value.isEmpty()) {
+            Property p = r.getModel().createProperty(NS + propName);
+            r.removeAll(p);
+            r.addProperty(p, value);
+        }
+    }
+
+    private String getPropValue(Resource r, String propName) {
+        Property p = r.getModel().getProperty(NS + propName);
+        if (r.hasProperty(p)) return r.getProperty(p).getString();
+        return "Unknown";
+    }
 
     private Map<String, Object> modelToVisJs(Model model) {
         List<Map<String, String>> nodes = new ArrayList<>();
         List<Map<String, String>> edges = new ArrayList<>();
         Set<String> addedNodes = new HashSet<>();
-
         StmtIterator iter = model.listStatements();
         while (iter.hasNext()) {
             Statement stmt = iter.nextStatement();
             String s = stmt.getSubject().toString();
             String p = stmt.getPredicate().getLocalName();
             String o = stmt.getObject().toString();
-
             if (addedNodes.add(s)) nodes.add(Map.of("id", s, "label", shortLabel(s), "color", "#97c2fc"));
             if (addedNodes.add(o)) nodes.add(Map.of("id", o, "label", shortLabel(o), "color", "#ffff00"));
             edges.add(Map.of("from", s, "to", o, "label", p, "arrows", "to"));
