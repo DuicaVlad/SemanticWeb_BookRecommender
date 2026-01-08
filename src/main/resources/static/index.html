@@ -4,8 +4,32 @@
     <title>Semantic Web System</title>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style>
+        /* Smooth scrolling effect */
+        html { scroll-behavior: smooth; }
+        
         body { font-family: sans-serif; padding: 20px; max-width: 1000px; margin: auto; }
-        .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
+        
+        /* Navbar Styles */
+        .navbar { 
+            background: #b6b5b5; 
+            padding: 10px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            position: sticky; 
+            top: 10px; 
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+        }
+        .navbar a { 
+            color: white; 
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 5px 15px;
+        }
+        .navbar a:hover { color: #007bff; }
+
+        .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #ddd; }
         #mynetwork { width: 100%; height: 500px; border: 1px solid #333; background: #222; margin-top: 10px; }
         input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box;}
         button { padding: 10px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
@@ -17,20 +41,26 @@
 <body>
     <h1>Book Recommendation System</h1>
 
-    <div class="section">
+    <nav class="navbar">
+        <a href="#visualize">Visualize</a>
+        <a href="#available">Available Books</a>
+        <a href="#modify">Add or Modify</a>
+    </nav>
+
+    <div class="section" id="visualize">
         <h3>Visualize RDF Graph</h3>
         <input type="file" id="fileInput">
         <button onclick="uploadAndVisualize()">Upload & Visualize</button>
         <div id="mynetwork"></div>
     </div>
 
-    <div class="section">
+    <div class="section" id="available">
         <h3>Available Books</h3>
         <button onclick="loadBooks()">Refresh Book List</button>
         <div id="bookList"></div>
     </div>
 
-    <div class="section">
+    <div class="section" id="modify">
         <h3>Add or Modify Book</h3>
         <div style="margin-bottom:10px"><label>ID (Required):</label> <input type="text" id="bId" placeholder="e.g. HarryPotter"></div>
         <div style="margin-bottom:10px"><label>Title:</label> <input type="text" id="bTitle"></div>
@@ -48,16 +78,19 @@
     </div>
 
     <script>
+        /* ... Your existing JavaScript remains exactly the same ... */
         async function loadBooks() {
-            let res = await fetch('/api/books');
-            let books = await res.json();
-            let html = '';
-            books.forEach(b => {
-                html += `<div class="book-item" onclick="window.location.href='book_details.html?id=${b.id}'">
-                            <strong>${b.title}</strong> by ${b.author}
-                         </div>`;
-            });
-            document.getElementById('bookList').innerHTML = html;
+            try {
+                let res = await fetch('/api/books');
+                let books = await res.json();
+                let html = '';
+                books.forEach(b => {
+                    html += `<div class="book-item" onclick="window.location.href='book_details.html?id=${b.id}'">
+                                <strong>${b.title}</strong> by ${b.author}
+                             </div>`;
+                });
+                document.getElementById('bookList').innerHTML = html;
+            } catch(e) { console.error("Could not load books", e); }
         }
 
         async function uploadAndVisualize() {
@@ -69,12 +102,14 @@
             let data = await response.json();
             drawGraph(data);
         }
+
         function drawGraph(data) {
             new vis.Network(document.getElementById('mynetwork'), 
                 { nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges) }, 
                 { nodes: { shape: 'dot', font: { color: 'white' } } }
             );
         }
+
         async function addBook() {
             let bookData = {
                 id: document.getElementById('bId').value,
