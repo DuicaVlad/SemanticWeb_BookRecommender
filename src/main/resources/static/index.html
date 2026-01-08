@@ -1,30 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Semantic Web Task 2</title>
+    <title>Semantic Web System</title>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style>
-        #mynetwork { width: 100%; height: 600px; border: 1px solid lightgray; background: #222; }
+        body { font-family: sans-serif; padding: 20px; max-width: 1000px; margin: auto; }
+        .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
+        #mynetwork { width: 100%; height: 500px; border: 1px solid #333; background: #222; margin-top: 10px; }
+        input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box;}
+        .form-group { margin-bottom: 10px; }
+        button { padding: 10px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        label { font-weight: bold; }
     </style>
 </head>
 <body>
-    <h2>Task 2: Upload RDF</h2>
-    <input type="file" id="fileInput">
-    <button onclick="upload()">Visualize</button>
-    <div id="mynetwork"></div>
+    <h1>Book Recommendation System</h1>
+
+    <div class="section">
+        <h3>Visualize RDF Graph</h3>
+        <input type="file" id="fileInput">
+        <button onclick="uploadAndVisualize()">Upload & Visualize</button>
+        <div id="mynetwork"></div>
+    </div>
+
+    <div class="section">
+        <h3>Add or Modify Book</h3>
+        <p><i>Enter an ID to modify an existing book (e.g., 'HungerGames') or a new ID to create one.</i></p>
+        
+        <div class="form-group"><label>ID (Required):</label> <input type="text" id="bId" placeholder="e.g. HarryPotter"></div>
+        <div class="form-group"><label>Title:</label> <input type="text" id="bTitle" placeholder="e.g. Harry Potter and the Sorcerer's Stone"></div>
+        <div class="form-group"><label>Author:</label> <input type="text" id="bAuthor" placeholder="e.g. J.K. Rowling"></div>
+        <div class="form-group"><label>Theme:</label> <input type="text" id="bTheme" placeholder="e.g. Fantasy"></div>
+        <div class="form-group"><label>Level:</label> 
+            <select id="bLevel">
+                <option value="">Select Diff</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+            </select>
+        </div>
+        <button onclick="addBook()">Save Book</button>
+    </div>
 
     <script>
-        async function upload() {
+        async function uploadAndVisualize() {
             let formData = new FormData();
-            formData.append('file', document.getElementById('fileInput').files[0]);
+            let fileInput = document.getElementById('fileInput');
+            if(fileInput.files.length === 0) { alert("Please select a file first"); return; }
             
-            let response = await fetch('/api/upload', { method: 'POST', body: formData });
-            let data = await response.json();
+            formData.append('file', fileInput.files[0]);
             
+            try {
+                let response = await fetch('/api/upload', { method: 'POST', body: formData });
+                if (!response.ok) throw new Error("Upload failed");
+                let data = await response.json();
+                drawGraph(data);
+            } catch (e) { alert("Error: " + e.message); }
+        }
+
+        function drawGraph(data) {
             new vis.Network(document.getElementById('mynetwork'), 
                 { nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges) }, 
                 { nodes: { shape: 'dot', font: { color: 'white' } }, edges: { color: 'gray' } }
             );
+        }
+
+        async function addBook() {
+            let bookData = {
+                id: document.getElementById('bId').value,
+                title: document.getElementById('bTitle').value,
+                author: document.getElementById('bAuthor').value,
+                theme: document.getElementById('bTheme').value,
+                level: document.getElementById('bLevel').value
+            };
+
+            if(!bookData.id) { alert("Please enter an ID"); return; }
+
+            try {
+                let response = await fetch('/api/addBook', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookData)
+                });
+                
+                let text = await response.text();
+                alert(text);
+                
+            } catch (e) { alert("Error saving book: " + e.message); }
         }
     </script>
 </body>

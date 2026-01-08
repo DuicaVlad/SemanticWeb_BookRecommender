@@ -1,46 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-         xmlns:ex="http://example.org/bookstore#">
-    
-    <rdf:Description rdf:about="http://example.org/bookstore#Alice">
-        <rdf:type rdf:resource="http://example.org/bookstore#User"/>
-        <ex:hasName>Alice</ex:hasName>
-        <ex:readingLevel>Intermediate</ex:readingLevel>
-        <ex:prefersTheme>Science Fiction</ex:prefersTheme>
-    </rdf:Description>
-    
-    <rdf:Description rdf:about="http://example.org/bookstore#Bob">
-        <rdf:type rdf:resource="http://example.org/bookstore#User"/>
-        <ex:hasName>Bob</ex:hasName>
-        <ex:readingLevel>Beginner</ex:readingLevel>
-        <ex:prefersTheme>Mystery</ex:prefersTheme>
-    </rdf:Description>
-    
-    <rdf:Description rdf:about="http://example.org/bookstore#Dune">
-        <rdf:type rdf:resource="http://example.org/bookstore#Book"/>
-        <ex:hasTitle>Dune</ex:hasTitle>
-        <ex:hasAuthor>Frank Herbert</ex:hasAuthor>
-        <ex:hasTheme>Science Fiction</ex:hasTheme>
-        <ex:hasTheme>Fantasy</ex:hasTheme>
-        <ex:suitableForLevel>Advanced</ex:suitableForLevel>
-    </rdf:Description>
-    
-    <rdf:Description rdf:about="http://example.org/bookstore#TheSilentPatient">
-        <rdf:type rdf:resource="http://example.org/bookstore#Book"/>
-        <ex:hasTitle>The Silent Patient</ex:hasTitle>
-        <ex:hasAuthor>Alex Michaelides</ex:hasAuthor>
-        <ex:hasTheme>Mystery</ex:hasTheme>
-        <ex:hasTheme>Murder</ex:hasTheme>
-        <ex:suitableForLevel>Intermediate</ex:suitableForLevel>
-    </rdf:Description>
-    
-    <rdf:Description rdf:about="http://example.org/bookstore#HungerGames">
-        <rdf:type rdf:resource="http://example.org/bookstore#Book"/>
-        <ex:hasTitle>Hunger Games</ex:hasTitle>
-        <ex:hasAuthor>Suzanne Collins</ex:hasAuthor>
-        <ex:hasTheme>Science Fiction</ex:hasTheme>
-        <ex:hasTheme>Fantasy</ex:hasTheme>
-        <ex:suitableForLevel>Beginner</ex:suitableForLevel>
-    </rdf:Description>
-    
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ex="http://example.org/bookstore#">
+  <ex:Book rdf:about="http://example.org/bookstore#HungerGames">
+    <ex:hasTitle>Hunger Games</ex:hasTitle>
+    <ex:hasAuthor>Suzanne Collins</ex:hasAuthor>
+    <ex:hasTheme>Science Fiction</ex:hasTheme>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:suitableForLevel>Advanced</ex:suitableForLevel>
+  </ex:Book>
+  <ex:Book rdf:about="http://example.org/bookstore#Dune">
+    <ex:hasTitle>Dune</ex:hasTitle>
+    <ex:hasAuthor>Frank Herbert</ex:hasAuthor>
+    <ex:hasTheme>Science Fiction</ex:hasTheme>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:suitableForLevel>Advanced</ex:suitableForLevel>
+  </ex:Book>
+  <ex:User rdf:about="http://example.org/bookstore#Alice">
+    <ex:hasName>Alice</ex:hasName>
+    <ex:readingLevel>Intermediate</ex:readingLevel>
+    <ex:prefersTheme>Science Fiction</ex:prefersTheme>
+  </ex:User>
+  <ex:Book rdf:about="http://example.org/bookstore#HarryPotter">
+    <ex:suitableForLevel>Beginner</ex:suitableForLevel>
+    <ex:hasTheme>Fantasy</ex:hasTheme>
+    <ex:hasAuthor>J.K. Rowling</ex:hasAuthor>
+    <ex:hasTitle>Harry Potter</ex:hasTitle>
+  </ex:Book>
+  <ex:User rdf:about="http://example.org/bookstore#Bob">
+    <ex:hasName>Bob</ex:hasName>
+    <ex:readingLevel>Beginner</ex:readingLevel>
+    <ex:prefersTheme>Mystery</ex:prefersTheme>
+  </ex:User>
+  <ex:Book rdf:about="http://example.org/bookstore#TheSilentPatient">
+    <ex:hasTitle>The Silent Patient</ex:hasTitle>
+    <ex:hasAuthor>Alex Michaelides</ex:hasAuthor>
+    <ex:hasTheme>Mystery</ex:hasTheme>
+    <ex:hasTheme>Murder</ex:hasTheme>
+    <ex:suitableForLevel>Intermediate</ex:suitableForLevel>
+  </ex:Book>
 </rdf:RDF>
