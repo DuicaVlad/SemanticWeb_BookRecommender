@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Semantic Web Task 2</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        #mynetwork { width: 100%; height: 600px; border: 1px solid lightgray; background: #222; }
+    </style>
+</head>
+<body>
+    <h2>Task 2: Upload RDF</h2>
+    <input type="file" id="fileInput">
+    <button onclick="upload()">Visualize</button>
+    <div id="mynetwork"></div>
+
+    <script>
+        async function upload() {
+            let formData = new FormData();
+            formData.append('file', document.getElementById('fileInput').files[0]);
+            
+            let response = await fetch('/api/upload', { method: 'POST', body: formData });
+            let data = await response.json();
+            
+            new vis.Network(document.getElementById('mynetwork'), 
+                { nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges) }, 
+                { nodes: { shape: 'dot', font: { color: 'white' } }, edges: { color: 'gray' } }
+            );
+        }
+    </script>
+</body>
+</html>
