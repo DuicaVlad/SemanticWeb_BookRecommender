@@ -1,42 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Semantic Web System</title>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <style>
-        /* Smooth scrolling effect */
-        html { scroll-behavior: smooth; }
-        
-        body { font-family: sans-serif; padding: 20px; max-width: 1000px; margin: auto; }
-        
-        /* Navbar Styles */
-        .navbar { 
-            background: #b6b5b5; 
-            padding: 10px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            position: sticky; 
-            top: 10px; 
-            z-index: 1000;
-            display: flex;
-            justify-content: space-around;
-        }
-        .navbar a { 
-            color: white; 
-            text-decoration: none; 
-            font-weight: bold; 
-            padding: 5px 15px;
-        }
-        .navbar a:hover { color: #007bff; }
-
-        .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #ddd; }
-        #mynetwork { width: 100%; height: 500px; border: 1px solid #333; background: #222; margin-top: 10px; }
-        input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box;}
-        button { padding: 10px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
-        button:hover { background: #0056b3; }
-        .book-item { background: white; padding: 10px; margin: 5px 0; border-left: 5px solid #007bff; cursor: pointer; }
-        .book-item:hover { background: #eef; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Book Recommendation System</h1>
@@ -62,11 +30,24 @@
 
     <div class="section" id="modify">
         <h3>Add or Modify Book</h3>
-        <div style="margin-bottom:10px"><label>ID (Required):</label> <input type="text" id="bId" placeholder="e.g. HarryPotter"></div>
-        <div style="margin-bottom:10px"><label>Title:</label> <input type="text" id="bTitle"></div>
-        <div style="margin-bottom:10px"><label>Author:</label> <input type="text" id="bAuthor"></div>
-        <div style="margin-bottom:10px"><label>Theme:</label> <input type="text" id="bTheme"></div>
-        <div style="margin-bottom:10px"><label>Level:</label> 
+        <div class="form-group">
+            <label>ID (Required):</label> 
+            <input type="text" id="bId" placeholder="e.g. HarryPotter">
+        </div>
+        <div class="form-group">
+            <label>Title:</label> 
+            <input type="text" id="bTitle">
+        </div>
+        <div class="form-group">
+            <label>Author:</label> 
+            <input type="text" id="bAuthor">
+        </div>
+        <div class="form-group">
+            <label>Theme:</label> 
+            <input type="text" id="bTheme">
+        </div>
+        <div class="form-group">
+            <label>Level:</label> 
             <select id="bLevel">
                 <option value="">Select</option>
                 <option value="Beginner">Beginner</option>
@@ -77,57 +58,6 @@
         <button onclick="addBook()">Save Book</button>
     </div>
 
-    <script>
-        /* ... Your existing JavaScript remains exactly the same ... */
-        async function loadBooks() {
-            try {
-                let res = await fetch('/api/books');
-                let books = await res.json();
-                let html = '';
-                books.forEach(b => {
-                    html += `<div class="book-item" onclick="window.location.href='book_details.html?id=${b.id}'">
-                                <strong>${b.title}</strong> by ${b.author}
-                             </div>`;
-                });
-                document.getElementById('bookList').innerHTML = html;
-            } catch(e) { console.error("Could not load books", e); }
-        }
-
-        async function uploadAndVisualize() {
-            let formData = new FormData();
-            let fileInput = document.getElementById('fileInput');
-            if(fileInput.files.length === 0) { alert("Select file first"); return; }
-            formData.append('file', fileInput.files[0]);
-            let response = await fetch('/api/upload', { method: 'POST', body: formData });
-            let data = await response.json();
-            drawGraph(data);
-        }
-
-        function drawGraph(data) {
-            new vis.Network(document.getElementById('mynetwork'), 
-                { nodes: new vis.DataSet(data.nodes), edges: new vis.DataSet(data.edges) }, 
-                { nodes: { shape: 'dot', font: { color: 'white' } } }
-            );
-        }
-
-        async function addBook() {
-            let bookData = {
-                id: document.getElementById('bId').value,
-                title: document.getElementById('bTitle').value,
-                author: document.getElementById('bAuthor').value,
-                theme: document.getElementById('bTheme').value,
-                level: document.getElementById('bLevel').value
-            };
-            if(!bookData.id) { alert("ID required"); return; }
-            await fetch('/api/addBook', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bookData)
-            });
-            alert("Saved!");
-            loadBooks();
-        }
-        
-        loadBooks();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
