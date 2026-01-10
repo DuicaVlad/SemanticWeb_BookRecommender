@@ -1,0 +1,10 @@
+flask
+flask-cors
+langchain
+langchain-community
+langchain-huggingface
+chromadb
+rdflib
+bs4
+lxml
+sentence-transformers

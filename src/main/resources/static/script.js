@@ -1,6 +1,3 @@
-/**
- * Loads the list of books from the RDF API
- */
 async function loadBooks() {
     try {
         const res = await fetch('/api/books');
@@ -23,9 +20,6 @@ async function loadBooks() {
     }
 }
 
-/**
- * Uploads an RDF file and visualizes the graph
- */
 async function uploadAndVisualize() {
     const fileInput = document.getElementById('fileInput');
     if (fileInput.files.length === 0) { 
@@ -49,9 +43,6 @@ async function uploadAndVisualize() {
     }
 }
 
-/**
- * Initializes the Vis-Network graph
- */
 function drawGraph(data) {
     const container = document.getElementById('mynetwork');
     const visData = {
@@ -72,9 +63,6 @@ function drawGraph(data) {
     new vis.Network(container, visData, options);
 }
 
-/**
- * Submits a new book to the Semantic server
- */
 async function addBook() {
     const bookData = {
         id: document.getElementById('bId').value,
@@ -98,9 +86,8 @@ async function addBook() {
 
         if (response.ok) {
             alert("Book saved successfully!");
-            // Clear inputs
             document.querySelectorAll('input, select').forEach(el => el.value = '');
-            loadBooks(); // Refresh the list
+            loadBooks();
         } else {
             alert("Error saving book.");
         }
@@ -109,5 +96,4 @@ async function addBook() {
     }
 }
 
-// Initialize list on page load
 document.addEventListener('DOMContentLoaded', loadBooks);
