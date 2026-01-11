@@ -45,7 +45,6 @@ public class RdfController {
 
             saveModel(model);
 
-            // Notify chatbot to reload data
             reloadChatbotData();
 
             return ResponseEntity.ok("Book saved!");
