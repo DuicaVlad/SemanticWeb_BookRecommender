@@ -33,6 +33,36 @@
         <a href="index.html" class="back-btn">&larr; Back to Book List</a>
     </div>
 
+    <!-- Floating Chatbot -->
+    <div id="chatbot-container">
+        <button id="chatbot-toggle" class="chat-toggle-btn">
+            <span id="chat-icon">💬</span>
+        </button>
+
+        <div id="chatbot-window" class="chat-window hidden">
+            <div class="chat-header">
+                <h3>Book Assistant</h3>
+                <button id="chat-close" class="chat-close-btn">&times;</button>
+            </div>
+
+            <div id="conversation-starters" class="conversation-starters">
+                <!-- Dynamic starters will be loaded here -->
+            </div>
+
+            <div id="chat-messages" class="chat-messages">
+                <div class="chat-message bot-message">
+                    <p>Hello! I'm your book recommendation assistant. How can I help you today?</p>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Ask me about books...">
+                <button id="chat-send" class="chat-send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
     <script src="book_details.js"></script>
+    <script src="chatbot.js"></script>
 </body>
 </html>

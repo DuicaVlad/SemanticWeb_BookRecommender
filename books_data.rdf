@@ -15,6 +15,12 @@
     <ex:hasAuthor>Frank Herbert</ex:hasAuthor>
     <ex:hasTitle>Dune</ex:hasTitle>
   </ex:Book>
+  <ex:Book rdf:about="http://example.org/bookstore#Test1">
+    <ex:hasTitle>Test of the tests</ex:hasTitle>
+    <ex:hasAuthor>Test author</ex:hasAuthor>
+    <ex:hasTheme>Science Fiction</ex:hasTheme>
+    <ex:suitableForLevel>Beginner</ex:suitableForLevel>
+  </ex:Book>
   <ex:Book rdf:about="http://example.org/bookstore#Hobbit">
     <ex:suitableForLevel>Intermediate</ex:suitableForLevel>
     <ex:hasTheme>Fantasy</ex:hasTheme>
@@ -31,6 +37,12 @@
     <ex:hasAuthor>J.K. Rowling</ex:hasAuthor>
     <ex:hasTheme>Fantasy</ex:hasTheme>
     <ex:suitableForLevel>Beginner</ex:suitableForLevel>
+  </ex:Book>
+  <ex:Book rdf:about="http://example.org/bookstore#Test">
+    <ex:suitableForLevel>Beginner</ex:suitableForLevel>
+    <ex:hasTheme>test</ex:hasTheme>
+    <ex:hasAuthor>test</ex:hasAuthor>
+    <ex:hasTitle>test</ex:hasTitle>
   </ex:Book>
   <ex:User rdf:about="http://example.org/bookstore#Bob">
     <ex:prefersTheme>Mystery</ex:prefersTheme>

@@ -44,9 +44,31 @@ public class RdfController {
             updateProperty(book, "suitableForLevel", payload.get("level"));
 
             saveModel(model);
+
+            // Notify chatbot to reload data
+            reloadChatbotData();
+
             return ResponseEntity.ok("Book saved!");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
+        }
+    }
+
+    private void reloadChatbotData() {
+        try {
+            java.net.URL url = new java.net.URL("http://localhost:5000/reload");
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                System.out.println("Chatbot data reloaded successfully");
+            }
+            conn.disconnect();
+        } catch (Exception e) {
+            System.err.println("Failed to reload chatbot data: " + e.getMessage());
         }
     }
 
