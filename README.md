@@ -2,6 +2,8 @@
 
 A semantic web-based book recommendation system with RDF/OWL ontology, SPARQL queries, and an AI-powered chatbot.
 
+https://github.com/DuicaVlad/SemanticWeb_BookRecommender
+
 ## Team Members and Contributions
 
 **Duica Vlad** - Exercises 1-6
