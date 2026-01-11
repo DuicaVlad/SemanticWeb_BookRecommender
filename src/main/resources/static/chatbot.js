@@ -1,17 +1,13 @@
-// Chatbot Configuration
 const CHATBOT_API_URL = 'http://localhost:5000';
 
-// State management
 let currentContext = 'index';
 let currentBookId = null;
 
-// Initialize chatbot
 document.addEventListener('DOMContentLoaded', function() {
     initializeChatbot();
 });
 
 function initializeChatbot() {
-    // Determine current context
     const pathname = window.location.pathname;
     if (pathname.includes('book_details.html')) {
         currentContext = 'book_details';
@@ -22,10 +18,8 @@ function initializeChatbot() {
         currentBookId = null;
     }
 
-    // Load conversation starters
     loadConversationStarters();
 
-    // Event listeners
     document.getElementById('chatbot-toggle').addEventListener('click', toggleChatbot);
     document.getElementById('chat-close').addEventListener('click', closeChatbot);
     document.getElementById('chat-send').addEventListener('click', sendMessage);
@@ -78,7 +72,6 @@ async function loadConversationStarters() {
         displayConversationStarters(data.starters);
     } catch (error) {
         console.error('Error loading conversation starters:', error);
-        // Display default starters
         displayConversationStarters([
             'Tell me about the books',
             'What genres are available?',
@@ -109,17 +102,14 @@ async function sendMessage() {
 
     if (!message) return;
 
-    // Display user message
     addMessageToChat('user', message);
     input.value = '';
 
-    // Check if message is a book search query
     if (isBookSearchQuery(message)) {
         await handleBookSearch(message);
         return;
     }
 
-    // Show typing indicator
     const typingIndicator = addTypingIndicator();
 
     try {
@@ -141,10 +131,8 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        // Remove typing indicator
         typingIndicator.remove();
 
-        // Display bot response
         addMessageToChat('bot', data.response);
     } catch (error) {
         console.error('Error sending message:', error);
@@ -160,14 +148,12 @@ function isBookSearchQuery(message) {
 }
 
 async function handleBookSearch(message) {
-    // Extract author and theme from message
     const authorMatch = message.match(/author[:\s]+([^,\s]+(?:\s+[^,\s]+)*)/i);
     const themeMatch = message.match(/theme[:\s]+([^,\s]+(?:\s+[^,\s]+)*)/i);
 
     const author = authorMatch ? authorMatch[1].trim() : '';
     const theme = themeMatch ? themeMatch[1].trim() : '';
 
-    // Show typing indicator
     const typingIndicator = addTypingIndicator();
 
     try {
@@ -215,12 +201,11 @@ function addMessageToChat(sender, message) {
 
     const messageText = document.createElement('p');
     messageText.textContent = message;
-    messageText.style.whiteSpace = 'pre-wrap'; // Preserve line breaks
+    messageText.style.whiteSpace = 'pre-wrap';
 
     messageDiv.appendChild(messageText);
     messagesContainer.appendChild(messageDiv);
 
-    // Scroll to bottom
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     return messageDiv;

@@ -32,5 +32,4 @@ async function loadDetails() {
     }
 }
 
-// Run on load
 document.addEventListener('DOMContentLoaded', loadDetails);
